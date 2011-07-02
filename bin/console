@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+require 'irb'
+require 'irb/completion'
+require 'bundler'
+# Set up gems listed in the Gemfile.
+begin
+  ENV['BUNDLE_GEMFILE'] = File.expand_path('../../Gemfile', __FILE__)
+  require 'bundler'
+  Bundler.setup
+rescue Bundler::GemNotFound => e
+  STDERR.puts e.message
+  STDERR.puts "Try running 'bundle install'."
+  exit!
+end
+
+Bundler.require(:default)
+
+require File.expand_path("../../lib/em-twitter-client/twitter_client", __FILE__)
+
+IRB.start

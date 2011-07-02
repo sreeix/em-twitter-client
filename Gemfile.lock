@@ -1,0 +1,67 @@
+GIT
+  remote: git://github.com/igrigorik/em-http-request.git
+  revision: c7848ff95a603c0d97b465ed1f2058178b3f78c0
+  specs:
+    em-http-request (1.0.0.beta.4)
+      addressable (>= 2.2.3)
+      em-socksify
+      eventmachine (>= 1.0.0.beta.3)
+      http_parser.rb (>= 0.5.1)
+
+GIT
+  remote: git://github.com/sujal/oauth-ruby.git
+  revision: 6e2249fd1130dbc5fb9991e6ade8cd4abdbf3b5c
+  specs:
+    oauth (0.4.4)
+
+GIT
+  remote: https://github.com/igrigorik/em-synchrony.git
+  revision: 20172584779485f1c8c46333943e5582750698d2
+  specs:
+    em-synchrony (0.3.0.beta.1)
+      eventmachine (>= 1.0.0.beta.1)
+
+PATH
+  remote: .
+  specs:
+    em-twitter-client (0.0.1)
+      addressable (>= 2.2.3)
+      em-http-request (= 1.0.0.beta.4)
+      em-synchrony
+      eventmachine (>= 1.0.0.beta.3)
+      yajl-ruby
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    addressable (2.2.6)
+    diff-lcs (1.1.2)
+    em-socksify (0.1.0)
+      eventmachine
+    eventmachine (1.0.0.beta.3)
+    http_parser.rb (0.5.1)
+    rack-fiber_pool (0.9.0)
+    rake (0.8.7)
+    rspec (2.5.0)
+      rspec-core (~> 2.5.0)
+      rspec-expectations (~> 2.5.0)
+      rspec-mocks (~> 2.5.0)
+    rspec-core (2.5.1)
+    rspec-expectations (2.5.0)
+      diff-lcs (~> 1.1.2)
+    rspec-mocks (2.5.0)
+    yajl-ruby (0.8.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bundler
+  em-http-request (>= 1.0.0.beta.4)!
+  em-synchrony!
+  em-twitter-client!
+  oauth!
+  rack-fiber_pool (= 0.9.0)
+  rake
+  rspec
+  rspec-core
