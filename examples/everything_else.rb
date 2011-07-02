@@ -46,9 +46,21 @@ end
 EM.synchrony do 
   twitter = EM::TwitterClient.new(oauth)
   twitter.rate_limit
-  twitter.user_friends('markhneedham', 2) do |data|
+  twitter.user_friends('sreeix', 8) do |data|
     @data = data
-    puts data.flatten.size
+    puts "sreeix friends = #{data.flatten.size}"
+  end
+  twitter.user_friends('shufflr', 20) do |data|
+    @data = data
+    puts "shufflr friends = #{data.flatten.size}"
+  end
+  twitter.user_friends('markhneedham', 20) do |data|
+    @data = data
+    puts "markneedham = #{data.flatten.size}"
+  end
+  twitter.user_friends('WardCunningham', 10) do |data|
+    @data = data
+    puts "Wardcunningham friends #{data.flatten.size}"
     EM.stop
   end
 end
