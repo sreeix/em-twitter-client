@@ -8,18 +8,17 @@ module EventMachine
   ## }
   
   class TwitterClient
-    attr_reader :api_host
     attr_accessor :errback
     
     def initialize(oauth_config)
       EventMachine::HttpRequest.use EventMachine::Middleware::JSONResponse
+      @host = {:api => 'http://api.twitter.com', :search => 'http://search.twitter.com'}
       @oauth = oauth_config
-      @api_host = 'http://api.twitter.com'
       @errback = Proc.new {|data| puts data.inspect}
     end
     
     def rate_limit(&blk)
-      http = connection("1/account/rate_limit_status.json").get
+      http = connection("1/account/rate_limit_status.json").aget
       http.callback do 
          @current_ratelimit = http.response
          puts http.response.inspect
@@ -34,6 +33,21 @@ module EventMachine
       http.errback { @errback.call(http.response) } 
       self
     end
+
+    def search( text, pages = 1 ,search_opts = {}, &blk)
+      # path = "search.json?q=#{URI::escape(text)}"
+      # http = connection(path, :search).aget
+      # http.callback { yield(http.response) if block_given?}
+      # http.errback { @errback.call(http.response) } 
+      multi = EventMachine::Synchrony::Multi.new
+      Array(1..pages).each do |page|
+        conn = connection("search.json?q=#{URI::escape(text)}&page=#{page}", :search)
+        multi.add(page, conn.aget)
+        puts "q=#{URI::escape(text)}&page=#{page}"
+      end
+      
+      process_paged_responses multi.perform, blk
+    end
  
     def user_friends(user, pages = 1, &blk)
       multi = EventMachine::Synchrony::Multi.new
@@ -44,6 +58,7 @@ module EventMachine
       end
       
       process_paged_responses multi.perform, blk
+      self
     end
 
     def user_timeline(user, pages = 1, &blk)
@@ -54,6 +69,7 @@ module EventMachine
         puts "Addin 1/statuses/user_timeline.json?screen_name=#{user}&page=#{page}"
       end
       process_paged_responses multi.perform, blk
+      self
     end   
 
     # these are private  for the user. as in only available for that user.
@@ -65,6 +81,7 @@ module EventMachine
         puts "Addin 1/statuses/home_timeline.json?page=#{page}"
       end
       process_paged_responses multi.perform, blk
+      self
     end  
 
     def mentions(pages = 1, &blk)
@@ -75,6 +92,7 @@ module EventMachine
         puts "Addin 1/statuses/mentions.json?page=#{page}"
       end
       process_paged_responses multi.perform, blk
+      self
     end  
 
   private
@@ -87,8 +105,9 @@ module EventMachine
       @errback.call(errors) unless errors.empty?
     end
     
-    def connection(url)
-      EventMachine::HttpRequest.new("#{@api_host}/#{url}").tap {|c| c.use EventMachine::Middleware::OAuth, @oauth}
+    def connection(url, to=:api)
+      puts "#{@host[to]}/#{url}"
+      EventMachine::HttpRequest.new("#{@host[to]}/#{url}").tap {|c| c.use EventMachine::Middleware::OAuth, @oauth}
     end
   end
 end
