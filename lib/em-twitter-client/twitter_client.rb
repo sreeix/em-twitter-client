@@ -35,10 +35,6 @@ module EventMachine
     end
 
     def search( text, pages = 1 ,search_opts = {}, &blk)
-      # path = "search.json?q=#{URI::escape(text)}"
-      # http = connection(path, :search).aget
-      # http.callback { yield(http.response) if block_given?}
-      # http.errback { @errback.call(http.response) } 
       multi = EventMachine::Synchrony::Multi.new
       Array(1..pages).each do |page|
         conn = connection("search.json?q=#{URI::escape(text)}&page=#{page}", :search)
@@ -54,7 +50,7 @@ module EventMachine
       Array(1..pages).each do |page|
         conn = connection("1/statuses/friends.json?screen_name=#{user}&page=#{page}")
         multi.add(page, conn.aget)
-        puts "Addin 1/statuses/friends.json?screen_name=#{user}&page=#{page}"
+        puts "Adding 1/statuses/friends.json?screen_name=#{user}&page=#{page}"
       end
       
       process_paged_responses multi.perform, blk
@@ -66,7 +62,6 @@ module EventMachine
       Array(1..pages).each do |page|
         conn = connection("1/statuses/user_timeline.json?screen_name=#{user}&page=#{page}&count=200")
         multi.add(page, conn.aget)
-        puts "Addin 1/statuses/user_timeline.json?screen_name=#{user}&page=#{page}"
       end
       process_paged_responses multi.perform, blk
       self
@@ -78,7 +73,7 @@ module EventMachine
       Array(1..pages).each do |page|
         conn = connection("1/statuses/home_timeline.json?page=#{page}&count=200")
         multi.add(page, conn.aget)
-        puts "Addin 1/statuses/home_timeline.json?page=#{page}"
+        puts "Adding 1/statuses/home_timeline.json?page=#{page}"
       end
       process_paged_responses multi.perform, blk
       self
@@ -89,7 +84,7 @@ module EventMachine
       Array(1..pages).each do |page|
         conn = connection("1/statuses/mentions.json?page=#{page}&count=200")
         multi.add(page, conn.aget)
-        puts "Addin 1/statuses/mentions.json?page=#{page}"
+        puts "Adding 1/statuses/mentions.json?page=#{page}"
       end
       process_paged_responses multi.perform, blk
       self
@@ -97,7 +92,6 @@ module EventMachine
 
   private
     def process_paged_responses(res, blk)
-      # puts res.responses
       response = Array(res.responses[:callback]).sort{|a,b| a.first <=> b.first}.collect{|a,b| b.response}
       blk.call(response)
       errors = Array(res.responses[:errback]).sort{|a,b| a.first <=> b.first}.collect{|a,b| b.response}
