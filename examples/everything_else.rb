@@ -7,11 +7,13 @@ require 'em-synchrony/em-http'
 require "em-synchrony"
 require "em-synchrony/em-http"
 @data = []
-oauth = {:consumer_key     => 'YOUR KEY',
-         :consumer_secret  => 'YOUR SECRED',
-         :access_token     => 'TOKEN',
-         :access_token_secret => 'SECRET'
+
+oauth = {:consumer_key     => 'LALA',
+         :consumer_secret  => 'FOO',
+         :access_token     => 'LALA',
+         :access_token_secret => 'LALA'
        }
+
 
 EM.synchrony do 
   twitter = EM::TwitterClient.new(oauth)

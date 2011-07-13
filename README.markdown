@@ -12,4 +12,17 @@ The current implementation blocks for each api call to finish. Ie. 5 pages of us
 
 That's sort of what we needed, but the complete async api is coming soon as well. 
 
+
+Here are some examples. It's based on em-synchrony. So remember to wrap it into the EM.synchrony
+
+	EM.synchrony do 
+		twitter = EM::TwitterClient.new(oauth)
+  		twitter.rate_limit
+  		twitter.home_timeline(2) do |data|
+    		@data = data
+    		puts data.flatten.inspect
+    		EM.stop
+  		end
+	end
+
 Will hopefully publish the gem then as well, when that is done. 
